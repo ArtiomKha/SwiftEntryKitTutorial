@@ -52,10 +52,18 @@ class ViewController: UIViewController {
 		return button
 	}()
 
-	let customBannerButton: UIButton = {
+	let bottomSheetButton: UIButton = {
 		let button = UIButton()
 		button.translatesAutoresizingMaskIntoConstraints = false
-		button.setTitle("Present custom banner", for: .normal)
+		button.setTitle("Present bottom sheet", for: .normal)
+		button.backgroundColor = .blue
+		return button
+	}()
+
+	let formAlertButton: UIButton = {
+		let button = UIButton()
+		button.translatesAutoresizingMaskIntoConstraints = false
+		button.setTitle("Present form alert", for: .normal)
 		button.backgroundColor = .blue
 		return button
 	}()
@@ -65,18 +73,21 @@ class ViewController: UIViewController {
 		view.addSubview(buttonsStack)
 		buttonsStack.addArrangedSubview(toastButton)
 		buttonsStack.addArrangedSubview(alertButton)
-		buttonsStack.addArrangedSubview(customBannerButton)
+		buttonsStack.addArrangedSubview(bottomSheetButton)
+		buttonsStack.addArrangedSubview(formAlertButton)
 		NSLayoutConstraint.activate([
 			buttonsStack.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-			buttonsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-			buttonsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+			buttonsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+			buttonsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
 			toastButton.heightAnchor.constraint(equalToConstant: 56),
 			alertButton.heightAnchor.constraint(equalToConstant: 56),
-			customBannerButton.heightAnchor.constraint(equalToConstant: 56)
+			bottomSheetButton.heightAnchor.constraint(equalToConstant: 56),
+			formAlertButton.heightAnchor.constraint(equalToConstant: 56)
 		])
 		toastButton.addTarget(self, action: #selector(presentToast), for: .primaryActionTriggered)
 		alertButton.addTarget(self, action: #selector(presentAlert), for: .primaryActionTriggered)
-		customBannerButton.addTarget(self, action: #selector(presentCustomBanner), for: .primaryActionTriggered)
+		bottomSheetButton.addTarget(self, action: #selector(presentBottomSheet), for: .primaryActionTriggered)
+		formAlertButton.addTarget(self, action: #selector(presentFormAlert), for: .primaryActionTriggered)
 	}
 
 	@objc func presentToast() {
@@ -100,9 +111,25 @@ class ViewController: UIViewController {
 			}
 	}
 
-	@objc func presentCustomBanner() {
-		//TODO: - add logic for custom banner presentation
+	@objc func presentBottomSheet() {
+		presentationService.presentBottomSheet(
+			title: "This is bottom sheet!",
+			description: "You've just created this awesome bottom sheet using SwiftEntryKit!\nLook at this fancy gradient! What a powerfull library!",
+			image: UIImage(systemName: "hand.thumbsup")!,
+			buttonTitle: "Got it") {
+				print("performing some action")
+			}
 	}
 
+	@objc func presentFormAlert() {
+		presentationService.presentFormAlert { user in
+			dump(user)
+		}
+	}
 }
 
+struct UserData {
+	let name: String
+	let surname: String
+	let phone: String
+}
